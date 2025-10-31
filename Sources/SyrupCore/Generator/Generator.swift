@@ -154,7 +154,8 @@ public final class Generator {
 	public static func parseOperations(graphQLString: String) throws -> (queries: [String: String], mutations: [String: String], subscriptions: [String: String], fragments: [String: String]) {
 		print("Parsing .graphql files")
 		let visitor = OperationVisitor()
-		let document = try parse(graphQLString)
+		// Use parse with empty arrays to trigger normalization
+		let document = try parse(queries: [], mutations: [], subscriptions: [], fragments: [graphQLString])
 		let traverser = GraphQLTraverser(document: document, with: visitor)
 		try traverser.traverse()
 		return (visitor.queries, visitor.mutations, visitor.subscriptions, visitor.fragments)

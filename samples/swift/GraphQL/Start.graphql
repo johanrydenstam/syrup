@@ -1,5 +1,6 @@
-query StartPage($kidsProfile: Boolean!, $history: [History!], $seenSurveys: [String!]!, $abTestVariants: [AbTestVariant!]!, $favorites: [Favorite!], $missingWatchHistoryConsent: Boolean!) {
+query StartPage($kidsProfile: Boolean!, $userIsAbroad: Boolean!, $history: [History!], $seenSurveys: [String!]!, $abTestVariants: [AbTestVariant!]!, $favorites: [Favorite!], $missingWatchHistoryConsent: Boolean!, $kidsFilter: Boolean!) {
   startForSvtPlay(
+    filter: {userIsAbroad: $userIsAbroad, onlyKidsContent: $kidsProfile, kidsFilter: $kidsFilter}
     history: $history
     abTestVariants: $abTestVariants
     favorites: $favorites

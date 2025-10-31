@@ -2,6 +2,7 @@ query SearchPage($query: String, $kidsFilter: Boolean!, $userIsAbroad: Boolean!,
   searchPage(query: $query,
   searchClickHistory: $searchHistory,
   abTestVariants: $abTestVariants,
+  filter: { userIsAbroad: $userIsAbroad, kidsFilter: $kidsFilter, onlyKidsContent: $onlyChildContent }
   favorites: $favorites) {
     recommendations {
       ...Selection
@@ -37,3 +38,4 @@ fragment Image on Image {
   changed
   blurHash
 }
+

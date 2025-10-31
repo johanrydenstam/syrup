@@ -274,11 +274,16 @@ final class OperationVisitor: GraphQLBaseVisitor {
 	}
 	
 	override func visitObjectField(objectField: SwiftGraphQLParser.ObjectField) {
+		// Add comma before field (except for the first field)
+		if objectFieldCount > 0 {
+			currentOperationContents += ", "
+		}
 		valueContext.push(.objectField)
 		currentOperationContents += "\(objectField.name): "
 	}
 	
 	override func exitObjectField(objectField: SwiftGraphQLParser.ObjectField) {
+		objectFieldCount += 1
 		valueContext.pop()
 	}
 	
@@ -293,12 +298,16 @@ final class OperationVisitor: GraphQLBaseVisitor {
 	}
 	
 	override func visitObjectValue(objectValue: [SwiftGraphQLParser.ObjectField]) {
+		// Add opening brace before pushing context
+		currentOperationContents += "{"
 		valueContext.push(.object)
 		objectFieldsSize = objectValue.count
 		objectFieldCount = 0
 	}
-	
+
 	override func exitObjectValue(objectValue: [SwiftGraphQLParser.ObjectField]) {
+		// Add closing brace before popping context
+		currentOperationContents += "}"
 		valueContext.pop()
 	}
 	
@@ -313,12 +322,12 @@ final class OperationVisitor: GraphQLBaseVisitor {
 				return ", "
 			}
 		case .object:
-			if objectFieldCount == 0 {
-				return "{"
-			} else {
-				return ", "
-			}
-		case .objectField, .variableDefinition:
+			// Object braces and commas are handled in visitObjectValue/visitObjectField
+			return ""
+		case .objectField:
+			// Commas are handled in visitObjectField
+			return ""
+		case .variableDefinition:
 			return ""
 		}
 	}
@@ -332,9 +341,8 @@ final class OperationVisitor: GraphQLBaseVisitor {
 				return "]"
 			}
 		case .object:
-			if objectFieldCount == objectFieldsSize {
-				return "}"
-			}
+			// Object braces are handled in visitObjectValue/exitObjectValue
+			return ""
 		case .variableDefinition:
 			return ": "
 		case .objectField:
