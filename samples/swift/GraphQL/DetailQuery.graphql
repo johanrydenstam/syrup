@@ -1,0 +1,197 @@
+query DetailQuery($id: String!, $platform: Platform, $history: [History!], $favorites: [String!], $accessibility: Accessibility, $kidsFilter: Boolean!, $userIsAbroad: Boolean!, $onlyKidsContent: Boolean!, $abTestVariants: [AbTestVariant!]!) {
+  detailsPage(
+    id: $id
+    platform: $platform
+    accessibility: $accessibility
+    history: $history
+    favorites: $favorites
+    abTestVariants: $abTestVariants
+    filter: {userIsAbroad: $userIsAbroad, kidsFilter: $kidsFilter, onlyKidsContent: $onlyKidsContent}
+  ) {
+    svtId
+    analytics {
+      ...Analytics
+    }
+    live {
+      liveNow
+    }
+    images {
+      wide {
+        id
+        changed
+        blurHash
+      }
+    }
+    modules {
+      analytics {
+        ...Analytics
+      }
+      details {
+        ...DetailModule
+      }
+      selection {
+        ...DetailSelection
+      }
+    }
+    analyticsIdentifiers {
+      viewId
+      viewType
+    }
+  }
+}
+
+fragment DetailModule on Details {
+  id
+  isFavorite
+  contentSvtId
+  progressFraction
+  accessibilities {
+    label
+    available
+  }
+  heading
+  subHeading
+  description
+  unplayableReason {
+    text
+    type
+  }
+  contentWarning {
+    text
+  }
+  analytics {
+    ...Analytics
+  }
+  images {
+    wide {
+      id
+      changed
+      blurHash
+    }
+  }
+  messages {
+    urgent {
+      message
+      link
+    }
+     editorial {
+      message
+      link
+    }
+  }
+  smartStart {
+    videoSvtId
+    label
+    badge {
+      text
+      altText
+      textColor
+      backgroundColor
+    }
+    item {
+      videoSvtId
+      ... on Playable {
+        parent {
+          targetAudience
+        }
+      }
+      ... on Content {
+        targetAudience
+      }
+      live {
+        start
+        liveNow
+        plannedEnd
+      }
+      ... on Playable {
+        videos {
+          accessibility
+          svtId
+        }
+      }
+      ... on Variant {
+        mainLanguage {
+          id
+        }
+      }
+    }
+  }
+  moreDetails {
+    byline
+    duration
+    episodeDescription
+    episodeHeading
+    heading
+    titleDescription
+    restrictions {
+      blockedForChildren
+      onlyAvailableInSwedenFormatted
+    }
+  }
+  publishingDetails {
+    label
+    value
+  }
+}
+
+fragment DetailSelection on Selection {
+  id
+  name
+  selectionType
+  accessibility
+  analyticsIdentifiers {
+    listId
+    listType
+  }
+  analytics {
+    ...Analytics
+  }
+  items(
+    filter: {userIsAbroad: $userIsAbroad, kidsFilter: $kidsFilter, onlyKidsContent: $onlyKidsContent}
+  ) {
+    ...DetailTeaser
+  }
+}
+
+fragment DetailTeaser on Teaser {
+  analytics {
+    ...Analytics
+  }
+  heading
+  subHeading
+  description
+  isFavorite
+  progressFraction
+  images {
+    wide {
+      id
+      changed
+      blurHash
+    }
+  }
+  badge {
+    text
+    altText
+    textColor
+    backgroundColor
+  }
+  item {
+    parent {
+      svtId
+      name
+    }
+    svtId
+    ... on Playable {
+      videos {
+        accessibility
+      }
+    }
+    ... on Video {
+      accessibility
+    }
+    ... on Content {
+      contentId: svtId
+    }
+  }
+}
+

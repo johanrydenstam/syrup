@@ -1,5 +1,8 @@
 location: schema.json
-customScalars: []
+customScalars:
+- graphType: Timestamp
+  nativeType: Date
+  rawValueType: String
 moduleName: StarWarsAPI
 header: |
         // Syrup auto-generated file
