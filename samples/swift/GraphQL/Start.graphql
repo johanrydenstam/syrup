@@ -1,0 +1,154 @@
+query StartPage($kidsProfile: Boolean!, $history: [History!], $seenSurveys: [String!]!, $abTestVariants: [AbTestVariant!]!, $favorites: [Favorite!], $missingWatchHistoryConsent: Boolean!) {
+  startForSvtPlay(
+    history: $history
+    abTestVariants: $abTestVariants
+    favorites: $favorites
+    kidsProfile: $kidsProfile
+  ) {
+    analytics {
+      ...Analytics
+    }
+    modules {
+      items {
+        id
+        analytics {
+          ...Analytics
+        }
+        superhero {
+          ...Superhero
+        }
+        selection {
+          ...Selection
+        }
+        continueWatching {
+          ...Selection
+        }
+        favorites {
+          ...Selection
+        }
+        missingConsentForContinueWatchingBanner @include(if: $missingWatchHistoryConsent) {
+          heading
+          text
+          editConsentButtonLabel
+          loginButtonLabel
+        }
+        breaking {
+          ...Breaking
+        }
+        survey(platform: appletv, surveysToExclude: $seenSurveys) {
+          id
+          heading
+          subHeading
+          qrCodeImage {
+            id
+            changed
+            blurHash
+          }
+        }
+      }
+    }
+    analyticsIdentifiers {
+      viewId
+      viewType
+    }
+  }
+  genresByIds(ids: ["syntolkat", "teckensprak"]) @include(if: $kidsProfile) {
+    genres {
+      ...Category
+    }
+  }
+}
+
+fragment Analytics on Analytics {
+  mergeable
+  map {
+    ... on StringAnalyticsValue {
+      key
+      stringValue
+    }
+    ... on NumericAnalyticsValue {
+      key
+      numericValue
+    }
+  }
+}
+
+fragment Superhero on Superhero {
+  id
+  heading
+  subheading
+  videoSvtId
+  titleSvtId
+  analytics {
+    ...Analytics
+  }
+  cleanImages {
+    wide {
+      id
+      changed
+      blurHash
+    }
+  }
+  svtId
+  logotype {
+    image {
+      id
+      changed
+      blurHash
+      width
+      height
+    }
+    logotypeAlignment
+  }
+  badge {
+    text
+    altText
+    backgroundColor
+    textColor
+  }
+}
+
+fragment Breaking on Breaking {
+  analytics {
+    ...Analytics
+  }
+  id
+  level
+  heading
+  subheading
+  svtId
+  videoSvtId
+  tagline
+  presentationHints {
+    playable
+    prominent
+  }
+  image {
+    id
+    changed
+    blurHash
+  }
+  badge {
+    text
+    altText
+    backgroundColor
+    textColor
+  }
+  live {
+    liveNow
+  }
+  playButtonText
+  relatedList {
+    ...Selection
+  }
+}
+
+fragment Category on Genre {
+  id
+  image {
+    id
+    changed
+    blurHash
+  }
+  name
+}

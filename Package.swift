@@ -1,11 +1,12 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.9
 
 import PackageDescription
 
 let package = Package(
 	name: "Syrup",
 	platforms: [
-		.macOS(.v10_15)
+		.macOS(.v10_15),
+        .iOS(.v15),
 	],
 	products: [
 		.executable(

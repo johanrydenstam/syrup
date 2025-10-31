@@ -1,0 +1,39 @@
+query SearchPage($query: String, $kidsFilter: Boolean!, $userIsAbroad: Boolean!, $abTestVariants: [AbTestVariant!], $onlyChildContent: Boolean!, $searchHistory: [SearchHistoryItem!], $favorites: [String!]) {
+  searchPage(query: $query,
+  searchClickHistory: $searchHistory,
+  abTestVariants: $abTestVariants,
+  favorites: $favorites) {
+    recommendations {
+      ...Selection
+    }
+    heading {
+      text
+      type
+    }
+    flat {
+        name
+      analyticsIdentifiers {
+        listId
+        listType
+      }
+      hits {
+        teaser {
+          ...Teaser
+        }
+        categoryTeaser {
+          id
+          heading
+          image {
+            ...Image
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment Image on Image {
+  id
+  changed
+  blurHash
+}

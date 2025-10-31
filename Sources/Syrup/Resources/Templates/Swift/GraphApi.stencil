@@ -259,7 +259,7 @@ public enum GraphSelections {
 }
 
 /// Represents the type of a GraphQL `ID` field. The ID uniquely identifies a GraphQL object and can be used to retrieve that object in a query.
-public struct GraphID: RawRepresentable, Equatable, CustomStringConvertible, ExpressibleByStringLiteral {
+public struct GraphID: RawRepresentable, Hashable, CustomStringConvertible, ExpressibleByStringLiteral {
 	/// The string representation of the ID. This is not intended to be human-readable, and you should not rely on its structure.
 	public let rawValue: String
 	public init(rawValue: String) {

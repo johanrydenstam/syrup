@@ -1,17 +1,18 @@
 import UIKit
 import PlaygroundSupport
 
-let query = StarWarsAPI.FilmsQuery(first: 10)
+let query = StarWarsAPI.StartPageQuery(kidsProfile: false,
+                                       userIsAbroad: false,
+                                       seenSurveys: [],
+                                       abTestVariants: [],
+                                       missingWatchHistoryConsent: false,
+                                       kidsFilter: false)
 
-let client = GraphQLClient(endpoint: URL(string: "https://swapi-graphql.netlify.com/.netlify/functions/index")!)
+let client = GraphQLClient(endpoint: URL(string: "https://contento.svt.se/graphql")!)
 
-client.query(query, responseType: StarWarsAPI.FilmsResponse.self) { (response, error) in
+client.query(query, responseType: StarWarsAPI.StartPageResponse.self) { (response, error) in
 	if let response = response {
-		response.allFilms?.edges?.forEach { edge in
-			if let node = edge?.node, let title = node.title, let director = node.director, let openingCrawl = node.openingCrawl {
-				print("Title: \(title) Directed by: \(director)\nA long time ago, in a galaxy far, far away...\n\(openingCrawl)\n")
-			}
-		}
+        print(response.startForSvtPlay.modules.items.first?.id)
 	}
 }
 

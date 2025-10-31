@@ -1,10 +1,11 @@
 {% extends "Base.stencil" %}
 {% block content %}
-{% if not asFile %}{{ accessLevel }} {% endif %}struct {{ name }}: GraphApiResponse, Equatable {
+{% if not asFile %}{{ accessLevel }} {% endif %}struct {{ name }}: GraphApiResponse, Hashable, Sendable {
+	// MARK: - Nested Types
+{{ collectedFields|nestedInterfaceTypeDefinitions:interfaceTypeName,groupedFragmentSpreads,groupedComputedFragmentFields,concreteTypeNames }}
 	{{ accessLevel }} var realized: Realized
 	private var common: {{ fallbackTypeName }}
 	{{ accessLevel }} var __typename: String
-
 	{% if baseFields %}// MARK: - Common Fields{% endif %}
 	{% for field in baseFields %}
 		{{ field|renderInterfaceWrapperTypeAlias:accessLevel }}
@@ -32,7 +33,7 @@
 		}
 	{% endfor %}
 
-	{{ accessLevel }} enum Realized: Equatable {
+	{{ accessLevel }} enum Realized: Hashable {
 		{% for concreteTypeName in concreteTypeNames %}
 			case {{ concreteTypeName|lowercasedFirstLetter }}({{ concreteTypeName }})
 		{% endfor %}
@@ -83,7 +84,5 @@
 		{% map fragmentSpreads into commonFragmentArgs using fragment %}{{ fragment.name|lowercasedFirstLetter }}Fragment: {{ fragment.name|lowercasedFirstLetter }}Fragment{% endmap %}
 		self.common = {{ fallbackTypeName }}({{ commonArgs|join:", " }}{% if commonArgs and commonFragmentArgs %}, {% endif %}{{ commonFragmentArgs|join:", " }})
 	}
-
-	{{ collectedFields|nestedInterfaceTypeDefinitions:interfaceTypeName,groupedFragmentSpreads,groupedComputedFragmentFields,concreteTypeNames }}
 }
 {% endblock %}

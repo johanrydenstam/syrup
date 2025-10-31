@@ -225,12 +225,13 @@ final class SwiftRenderer: Renderer {
 		
 		customExtension.registerFilter("renderInterfaceWrapperTypeAlias", filter: { value, args -> Any? in
 			guard let field = value as? CollectedField, let accessLevel = args.first as? String else { return nil }
-			
+
 			switch field {
 			case is IntermediateRepresentation.CollectedObjectField,
-				 is IntermediateRepresentation.CollectedUnionField:
+				 is IntermediateRepresentation.CollectedUnionField,
+				 is IntermediateRepresentation.CollectedInterfaceField:
 				return "\(accessLevel) typealias \(field.name.capitalizedFirstLetter) = Base\(field.parentType.capitalizedFirstLetter).\(field.name.capitalizedFirstLetter)"
-				
+
 			default:
 				// Other fields will be declared as top-level types and do not need typealiases
 				return nil

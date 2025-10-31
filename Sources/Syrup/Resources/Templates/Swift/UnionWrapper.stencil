@@ -1,7 +1,7 @@
 {% extends "Base.stencil" %}
 
 {% block content %}
-{% if not asFile %}{{ accessLevel }} {% endif %}struct {{ name }}: GraphApiResponse, Equatable {
+{% if not asFile %}{{ accessLevel }} {% endif %}struct {{ name }}: GraphApiResponse, Hashable, Sendable {
 	{{ accessLevel }} var realized: Realized
 	{{ accessLevel }} var __typename: String
 
@@ -9,7 +9,7 @@
 		{{ accessLevel }} var as{{ fragment.name }}Fragment: {{ moduleName }}.{{ fragment.name }}{% if fragment.conditionallySelected %}?{% endif %}
 	{% endfor %}
 
-	{{ accessLevel }} enum Realized: Equatable {
+	{{ accessLevel }} enum Realized: Hashable {
 		{% for concreteTypeName in concreteTypeNames %}
 			case {{ concreteTypeName|lowercasedFirstLetter }}({{ concreteTypeName }})
 		{% endfor %}

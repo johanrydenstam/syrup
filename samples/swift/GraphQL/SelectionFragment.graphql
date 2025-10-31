@@ -1,0 +1,49 @@
+fragment Selection on Selection {
+  id
+  selectionType
+  name
+  listPresentation
+  presentationHint
+  analytics {
+    ...Analytics
+  }
+  items {
+    ...Teaser
+  }
+}
+
+fragment Teaser on Teaser {
+  byline
+  name
+  description
+  subHeading
+  progressFraction
+  isFavorite
+  analytics {
+    ...Analytics
+  }
+  badge {
+    text
+    altText
+    textColor
+    backgroundColor
+  }
+  adaptiveImage {
+    id
+    changed
+    blurHash
+  }
+  item {
+    svtId
+    videoSvtId
+    parent {
+      svtId
+      name
+    }
+    ... on Playable {
+      episode {
+        svtId
+      }
+    }
+  }
+}
