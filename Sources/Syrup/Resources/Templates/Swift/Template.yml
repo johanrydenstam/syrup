@@ -83,9 +83,9 @@ reservedWords: [
     "willSet"
 ]
 builtInScalars:
-    Int: "Int32"
+    Int: "Int"
     Float: "Double"
     String: "String"
     Boolean: "Bool"
-    ID: "GraphID"
+    ID: "String"
 

@@ -2,7 +2,7 @@
 
 {% block content %}
 	{% with enumType.attributes as attributes %}{% include "Helpers/Attributes.stencil" %}{% endwith %}
-	enum {{ enumType.name }}: String, Codable, CaseIterable {
+	enum {{ enumType.name }}: String, Codable, CaseIterable, Hashable, Sendable {
 		{% for enumValue in enumType.values %}
 		{% with enumValue.attributes as attributes %}{% include "Helpers/Attributes.stencil" %}{% endwith %}
 		case {{ enumValue.value|camelCased|escapeReservedWord }} = "{{ enumValue.value }}"

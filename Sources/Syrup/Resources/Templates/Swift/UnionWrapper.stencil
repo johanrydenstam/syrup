@@ -9,7 +9,7 @@
 		{{ accessLevel }} var as{{ fragment.name }}Fragment: {{ moduleName }}.{{ fragment.name }}{% if fragment.conditionallySelected %}?{% endif %}
 	{% endfor %}
 
-	{{ accessLevel }} enum Realized: Hashable {
+	{{ accessLevel }} enum Realized: Hashable, Sendable {
 		{% for concreteTypeName in concreteTypeNames %}
 			case {{ concreteTypeName|lowercasedFirstLetter }}({{ concreteTypeName }})
 		{% endfor %}

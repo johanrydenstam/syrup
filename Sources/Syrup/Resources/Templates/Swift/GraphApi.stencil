@@ -1,4 +1,6 @@
 {{ supportFilesHeader }}
+// swiftlint:disable all
+
 #if !os(Linux)
 import os
 #endif
@@ -137,7 +139,7 @@ open class BaseCustomScalarResolver {
 }
 
 public enum GraphSelections {
-	public struct Operation: Equatable {
+	public struct Operation: Equatable, Sendable {
 		public let type: OperationType
 		public let selectionSet: [Selection]
 
@@ -147,7 +149,7 @@ public enum GraphSelections {
 		}
 	}
 
-	public enum OperationType: Equatable {
+	public enum OperationType: Equatable, Sendable {
 		case mutation(String)
 		case query(String)
 		case subscription(String)
@@ -159,7 +161,7 @@ public enum GraphSelections {
 		}
 	}
 
-	public enum Selection: Equatable {
+	public enum Selection: Equatable, Sendable {
 		case field(Field)
 		case fragmentSpread(FragmentSpread, conditionalDirective: ConditionalDirective?)
 		case inlineFragment(InlineFragment)
@@ -169,7 +171,7 @@ public enum GraphSelections {
 		}
 	}
 
-	public struct Field: Equatable {
+	public struct Field: Equatable, Sendable {
 		public let name: String
 		public let alias: String?
 		public let conditionalDirective: ConditionalDirective?
@@ -189,12 +191,12 @@ public enum GraphSelections {
 		}
 	}
 
-	public enum ConditionalDirective: Equatable {
+	public enum ConditionalDirective: Equatable, Sendable {
 		case skip(ArgumentValue)
 		case include(ArgumentValue)
 	}
 
-	public struct Argument: Equatable {
+	public struct Argument: Equatable, Sendable {
 		public let name: String
 		public let value: ArgumentValue
 
@@ -204,7 +206,7 @@ public enum GraphSelections {
 		}
 	}
 
-	public struct FragmentSpread: Equatable {
+	public struct FragmentSpread: Equatable, Sendable {
 		public let name: String
 		public let typeCondition: TypeCondition
 		public let selectionSet: [Selection]
@@ -216,7 +218,7 @@ public enum GraphSelections {
 		}
 	}
 
-	public struct InlineFragment: Equatable {
+	public struct InlineFragment: Equatable, Sendable {
 		public let typeCondition: TypeCondition
 		public let conditionalDirective: ConditionalDirective?
 		public let selectionSet: [Selection]
@@ -228,14 +230,14 @@ public enum GraphSelections {
 		}
 	}
 
-	public enum TypeCondition: Equatable {
+	public enum TypeCondition: Equatable, Sendable {
 		case object(String)
 		case interface(String)
 		case union(String)
 		case scalar(String)
 	}
 
-	public enum ArgumentValue: Equatable {
+	public enum ArgumentValue: Equatable, Sendable {
 		case variable(String)
 		case intValue(Int)
 		case floatValue(Float)
@@ -247,7 +249,7 @@ public enum GraphSelections {
 		case objectValue([ObjectField])
 	}
 
-	public struct ObjectField: Equatable {
+	public struct ObjectField: Equatable, Sendable {
 		public let name: String
 		public let value: ArgumentValue
 
@@ -259,7 +261,7 @@ public enum GraphSelections {
 }
 
 /// Represents the type of a GraphQL `ID` field. The ID uniquely identifies a GraphQL object and can be used to retrieve that object in a query.
-public struct GraphID: RawRepresentable, Hashable, CustomStringConvertible, ExpressibleByStringLiteral {
+public struct GraphID: RawRepresentable, Hashable, CustomStringConvertible, ExpressibleByStringLiteral, Sendable {
 	/// The string representation of the ID. This is not intended to be human-readable, and you should not rely on its structure.
 	public let rawValue: String
 	public init(rawValue: String) {
@@ -315,6 +317,9 @@ public enum Input<T> {
 		}
 	}
 }
+
+extension Input: Sendable where T: Sendable {}
+extension Input: Hashable where T: Hashable {}
 
 public extension Input {
 	/// Returns the field's value, if it has one.

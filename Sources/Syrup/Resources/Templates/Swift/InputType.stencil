@@ -2,10 +2,10 @@
 
 {% block content %}
 	{% with inputType.attributes as attributes %}{% include "Helpers/Attributes.stencil" %}{% endwith %}
-	{% if not asFile %}{{ accessLevel }} {% endif %}final class {{ inputType.name }}: Encodable, Equatable {
+	{% if not asFile %}{{ accessLevel }} {% endif %}struct {{ inputType.name }}: Encodable, Hashable, Sendable {
 		// MARK: - Input Fields
 		{% for field in inputType.inputFields %}
-			{{ accessLevel }} var {{ field.name|escapeReservedWord }}: {{ field.type|renderInputVariableType }}
+			{{ accessLevel }} let {{ field.name|escapeReservedWord }}: {{ field.type|renderInputVariableType }}
 		{% endfor %}
 
 		// MARK: - Initializer
@@ -28,16 +28,6 @@
 			var container = encoder.container(keyedBy: CodingKeys.self)
 			{% for field in inputType.inputFields %}
 				{% include "Helpers/EncodeField.stencil" %}
-			{% endfor %}
-		}
-
-		{{ accessLevel }} static func ==(lhs: {{ inputType.name }}, rhs: {{ inputType.name }}) -> Bool {
-			{% for field in inputType.inputFields %}
-			  {% if forloop.first %}
-					return lhs.{{ field.name|escapeReservedWord }} == rhs.{{ field.name|escapeReservedWord }}
-			  {% else %}
-					&& lhs.{{ field.name|escapeReservedWord }} == rhs.{{ field.name|escapeReservedWord }}
-			  {% endif %}
 			{% endfor %}
 		}
 	}

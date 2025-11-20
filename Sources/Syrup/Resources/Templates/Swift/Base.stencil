@@ -1,4 +1,5 @@
 {% if asFile %}{{ header }}{% endif %}
+// swiftlint:disable all
 
 {% if asFile %}
 {{ accessLevel }} extension {{ moduleName }} {
