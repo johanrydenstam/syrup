@@ -5,8 +5,9 @@
 import os
 #endif
 
-public protocol GraphApiQuery: Encodable, CustomStringConvertible {
+public protocol GraphApiQuery: Encodable, CustomStringConvertible, Sendable {
 	var queryString: String { get }
+    var queryName: String { get }
 	static var customEncoder: JSONEncoder { get }
 	static var errorLogger: GraphApiLogger? { get }
 	static var operationSelections: GraphSelections.Operation? { get }

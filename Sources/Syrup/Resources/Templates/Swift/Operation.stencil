@@ -45,5 +45,7 @@
 		{{ accessLevel }} let queryString: String = """
 		{{ queryString }}
 		"""
+
+        {{ accessLevel }} let queryName: String = "{{ operation.name }}"
 	}
 {% endblock %}
