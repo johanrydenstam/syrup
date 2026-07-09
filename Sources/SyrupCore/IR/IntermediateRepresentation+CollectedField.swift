@@ -398,24 +398,34 @@ extension IntermediateRepresentation {
 				fragmentSpread.name == fragmentDefinition.name
 			}) else { return [] }
 			var nestedFragmentSpreads: [SelectionPath] = []
-			let collectedFields = collectFields(for: fragmentDefinition, fragmentSpreads: &nestedFragmentSpreads, parentTypeCondition: parentTypeCondition, conditionallySelect: conditionallySelect || fragmentSpread.hasConditionalDirective)
+			let isCrossTypeSpread: Bool
+			switch (parentTypeCondition, fragmentDefinition.typeCondition) {
+			case (.interface, .interface(let fragmentInterface)), (.union, .interface(let fragmentInterface)):
+				isCrossTypeSpread = fragmentInterface != parentTypeCondition.name
+			case (.interface, .union), (.union, .union):
+				isCrossTypeSpread = true
+			default:
+				isCrossTypeSpread = false
+			}
+			let isConditional = conditionallySelect || fragmentSpread.hasConditionalDirective || isCrossTypeSpread
+			let collectedFields = collectFields(for: fragmentDefinition, fragmentSpreads: &nestedFragmentSpreads, parentTypeCondition: parentTypeCondition, conditionallySelect: isConditional)
 			fragmentSpreads.append(
 				SelectionPath(path: [
 					.fragment(SelectionPath.PathComponent.Fragment(
 						name: fragmentSpread.name,
 						typeCondition: fragmentDefinition.typeCondition,
 						invokedOnType: parentTypeCondition.name,
-						conditionallySelected: conditionallySelect || fragmentSpread.hasConditionalDirective))
+						conditionallySelected: isConditional))
 					]
 				)
-				
+
 			)
 			fragmentSpreads.append(contentsOf: nestedFragmentSpreads.map { $0.prepending(
 					.fragment(SelectionPath.PathComponent.Fragment(
 						name: fragmentSpread.name,
 						typeCondition: fragmentDefinition.typeCondition,
 						invokedOnType: parentTypeCondition.name,
-						conditionallySelected: conditionallySelect || fragmentSpread.hasConditionalDirective))
+						conditionallySelected: isConditional))
 					)
 				}
 			)
